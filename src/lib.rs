@@ -1,14 +1,22 @@
-pub fn add(left: u64, right: u64) -> u64 {
-    left + right
+struct Manager {
+    kind: String,
+    started: bool,
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
+impl Manager {
+    fn set_kind(&mut self, kind: String) {
+        self.kind = kind;
+    }
 
-    #[test]
-    fn it_works() {
-        let result = add(2, 2);
-        assert_eq!(result, 4);
+    fn kind(&self) -> &str {
+        &self.kind
+    }
+
+    fn start_up() {}
+
+    fn shut_down() {}
+
+    fn started(&self) -> bool {
+        self.started
     }
 }
