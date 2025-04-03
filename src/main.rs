@@ -5,6 +5,10 @@ use sfml::system::*;
 use sfml::window::*;
 
 fn main() {
+    tracing_subscriber::fmt::init();
+
+    dragonfly::test_logging();
+
     let mut window = RenderWindow::new(
         (800, 600),
         "SFML VertexArray accessors Example",

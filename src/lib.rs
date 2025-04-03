@@ -1,3 +1,5 @@
+use tracing::{debug, error, info, trace, warn};
+
 struct Manager {
     kind: String,
     started: bool,
@@ -19,4 +21,12 @@ impl Manager {
     fn started(&self) -> bool {
         self.started
     }
+}
+
+pub fn test_logging() {
+    error!("ERROR");
+    warn!("WARN");
+    info!("INFO");
+    debug!("DEBUG");
+    trace!("TRACE");
 }
