@@ -1,8 +1,14 @@
 extern crate sfml;
 
+use std::time::Duration;
+
 use sfml::graphics::*;
 use sfml::system::*;
 use sfml::window::*;
+use tracing::{debug, error, info, trace, warn};
+
+// Arbitrary. Needs tweaking.
+const TARGET_RENDER_TIME: Duration = Duration::from_millis(20);
 
 fn main() {
     tracing_subscriber::fmt::init();
@@ -24,6 +30,7 @@ fn main() {
     rectangle.set_position(Vector2f::new(100.0, 100.0));
 
     loop {
+        let start = std::time::Instant::now();
         // events
         while let Some(ev) = window.poll_event() {
             match ev {
@@ -39,5 +46,9 @@ fn main() {
         window.clear(Color::BLACK);
         window.draw(&rectangle);
         window.display();
+        let render_time = start.elapsed();
+        if let Some(sleep_time) = TARGET_RENDER_TIME.checked_sub(render_time) {
+            std::thread::sleep(sleep_time);
+        }
     }
 }

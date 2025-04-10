@@ -1,3 +1,5 @@
+use std::time::Duration;
+
 use tracing::{debug, error, info, trace, warn};
 
 struct Manager {
@@ -20,6 +22,30 @@ impl Manager {
 
     fn started(&self) -> bool {
         self.started
+    }
+}
+
+pub struct Clock {
+    previous_time: std::time::Instant,
+}
+
+impl Clock {
+    pub fn new() -> Self {
+        let previous_time = std::time::Instant::now();
+        Self { previous_time }
+    }
+
+    /// Time since previous time. Resets previous time.
+    pub fn delta(&mut self) -> Duration {
+        let now = std::time::Instant::now();
+        let elapsed = now - self.previous_time;
+        self.previous_time = now;
+        elapsed
+    }
+
+    /// Time since previous time
+    pub fn split(&self) -> Duration {
+        self.previous_time.elapsed()
     }
 }
 
