@@ -47,6 +47,10 @@ impl Clock {
     pub fn split(&self) -> Duration {
         self.previous_time.elapsed()
     }
+
+    pub fn reset(&mut self) {
+        self.previous_time = std::time::Instant::now();
+    }
 }
 
 pub fn test_logging() {
