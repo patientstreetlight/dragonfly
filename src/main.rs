@@ -48,24 +48,21 @@ fn main() {
         window.clear(Color::BLACK);
         window.draw(&rectangle);
         window.display();
-        let render_time = clock.delta();
-        trace!(
-            ?render_time,
-            ?TARGET_RENDER_TIME,
-            ?adjust_time,
-            "Rendering complete"
-        );
-        if let Some(intended_sleep_time) = TARGET_RENDER_TIME
-            .checked_sub(render_time)
-            .and_then(|sleep_time| sleep_time.checked_sub(adjust_time))
-        {
-            trace!(?intended_sleep_time, "Sleeping");
-            std::thread::sleep(intended_sleep_time);
-            let actual_sleep_time = clock.delta();
-            trace!(?actual_sleep_time, "Slept");
-            adjust_time = actual_sleep_time.saturating_sub(intended_sleep_time);
-        } else {
-            adjust_time = Duration::ZERO;
-        }
+        let render_time = clock.split();
+        trace!(?render_time, ?TARGET_RENDER_TIME, "Rendering complete");
+
+        let intended_sleep_time = TARGET_RENDER_TIME
+            .saturating_sub(render_time)
+            .saturating_sub(adjust_time);
+        trace!(?intended_sleep_time, "Sleeping");
+
+        let _ = clock.delta();
+        // Std won't sleep if the duration is zero (at least on this platform):
+        // https://github.com/rust-lang/rust/blob/2a5da7acd4c3eae638aa1c46f3a537940e60a0e4/library/std/src/sys/pal/unix/thread.rs#L258
+        std::thread::sleep(intended_sleep_time);
+        let actual_sleep_time = clock.split();
+
+        adjust_time = actual_sleep_time.saturating_sub(intended_sleep_time);
+        trace!(?actual_sleep_time, ?adjust_time, "Slept");
     }
 }
