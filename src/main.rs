@@ -48,13 +48,24 @@ fn main() {
         window.clear(Color::BLACK);
         window.draw(&rectangle);
         window.display();
-        let render_time = clock.split();
+        let render_time = clock.delta();
+        trace!(
+            ?render_time,
+            ?TARGET_RENDER_TIME,
+            ?adjust_time,
+            "Rendering complete"
+        );
         if let Some(intended_sleep_time) = TARGET_RENDER_TIME
             .checked_sub(render_time)
             .and_then(|sleep_time| sleep_time.checked_sub(adjust_time))
         {
+            trace!(?intended_sleep_time, "Sleeping");
             std::thread::sleep(intended_sleep_time);
-            // let adjust_time = actual_sleep_time - intended_sleep_time
+            let actual_sleep_time = clock.delta();
+            trace!(?actual_sleep_time, "Slept");
+            adjust_time = actual_sleep_time.saturating_sub(intended_sleep_time);
+        } else {
+            adjust_time = Duration::ZERO;
         }
     }
 }
