@@ -16,12 +16,42 @@ impl Manager {
         &self.kind
     }
 
-    fn start_up() {}
+    fn start_up(&self) {}
 
-    fn shut_down() {}
+    fn shut_down(&self) {}
 
     fn started(&self) -> bool {
         self.started
+    }
+}
+
+struct GameManager {
+    manager: Manager,
+    game_over: bool,
+    frame_time: usize,
+}
+
+impl GameManager {
+    fn start_up(&mut self) {
+        self.manager.start_up();
+    }
+
+    fn shut_down(&mut self) {
+        self.manager.shut_down();
+    }
+
+    fn run(&mut self) {}
+
+    fn set_game_over(&mut self, game_over: bool) {
+        self.game_over = game_over;
+    }
+
+    fn is_game_over(&self) -> bool {
+        self.game_over
+    }
+
+    fn frame_time(&self) -> usize {
+        self.frame_time
     }
 }
 
