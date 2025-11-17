@@ -2,45 +2,28 @@ use std::time::Duration;
 
 use tracing::{debug, error, info, trace, warn};
 
-struct Manager {
-    kind: String,
-    started: bool,
-}
+trait Manager {
+    fn kind(&self) -> &str;
 
-impl Manager {
-    fn set_kind(&mut self, kind: String) {
-        self.kind = kind;
-    }
+    fn start_up(&mut self);
 
-    fn kind(&self) -> &str {
-        &self.kind
-    }
+    fn shut_down(&mut self);
 
-    fn start_up(&self) {}
-
-    fn shut_down(&self) {}
-
-    fn started(&self) -> bool {
-        self.started
-    }
+    fn started(&self) -> bool;
 }
 
 struct GameManager {
-    manager: Manager,
+    started: bool,
     game_over: bool,
-    frame_time: usize,
+    frame_time: Duration,
 }
 
 impl GameManager {
-    fn start_up(&mut self) {
-        self.manager.start_up();
-    }
+    const KIND: &str = "GameManager";
 
-    fn shut_down(&mut self) {
-        self.manager.shut_down();
+    fn run(&mut self) {
+        // game loop
     }
-
-    fn run(&mut self) {}
 
     fn set_game_over(&mut self, game_over: bool) {
         self.game_over = game_over;
@@ -50,8 +33,27 @@ impl GameManager {
         self.game_over
     }
 
-    fn frame_time(&self) -> usize {
+    fn frame_time(&self) -> Duration {
         self.frame_time
+    }
+}
+
+impl Manager for GameManager {
+    fn kind(&self) -> &str {
+        Self::KIND
+    }
+
+    fn start_up(&mut self) {
+        self.started = true;
+    }
+
+    fn shut_down(&mut self) {
+        self.set_game_over(true);
+        self.started = false;
+    }
+
+    fn started(&self) -> bool {
+        todo!()
     }
 }
 
