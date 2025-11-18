@@ -2,26 +2,58 @@ use std::time::Duration;
 
 use tracing::{debug, error, info, trace, warn};
 
-struct Manager {
-    kind: String,
-    started: bool,
+trait Manager {
+    fn kind(&self) -> &str;
+
+    fn start_up(&mut self);
+
+    fn shut_down(&mut self);
+
+    fn started(&self) -> bool;
 }
 
-impl Manager {
-    fn set_kind(&mut self, kind: String) {
-        self.kind = kind;
+struct GameManager {
+    started: bool,
+    game_over: bool,
+    frame_time: Duration,
+}
+
+impl GameManager {
+    const KIND: &str = "GameManager";
+
+    fn run(&mut self) {
+        // game loop
     }
 
+    fn set_game_over(&mut self, game_over: bool) {
+        self.game_over = game_over;
+    }
+
+    fn is_game_over(&self) -> bool {
+        self.game_over
+    }
+
+    fn frame_time(&self) -> Duration {
+        self.frame_time
+    }
+}
+
+impl Manager for GameManager {
     fn kind(&self) -> &str {
-        &self.kind
+        Self::KIND
     }
 
-    fn start_up() {}
+    fn start_up(&mut self) {
+        self.started = true;
+    }
 
-    fn shut_down() {}
+    fn shut_down(&mut self) {
+        self.set_game_over(true);
+        self.started = false;
+    }
 
     fn started(&self) -> bool {
-        self.started
+        todo!()
     }
 }
 
